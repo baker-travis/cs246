@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -6,17 +7,16 @@ import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
-/**
- * Creates a blank html file in the specified directory.
- * Contains all necessary html elements.
- * @author Travis Baker
- */
 public class MyGuiTest
 {
    JFrame mFrame;
    JPanel mPanel;
    JTextField field;
    File file;
+   String htmlText;
+   JEditorPane htmlEdit;
+   JTextField titleEdit;
+   JPanel textPanel;
    
    final JFileChooser fc = new JFileChooser();
    
@@ -43,8 +43,21 @@ public class MyGuiTest
       mPanel.add(field);
       mPanel.add(submit);
       mFrame.getContentPane().add(BorderLayout.CENTER, mPanel);
+      JLabel title = new JLabel("Web Page Title:");
+      textPanel = new JPanel();
+      textPanel.setPreferredSize(new Dimension(500, 500));
+      titleEdit = new JTextField(30);
+      htmlEdit = new JEditorPane();
+      htmlEdit.setContentType("text/html");
+      htmlEdit.setPreferredSize(new Dimension(400, 400));
+      htmlEdit.setBorder(new BevelBorder(BevelBorder.LOWERED));
+      textPanel.add(title);
+      textPanel.add(titleEdit);
+      textPanel.add(htmlEdit);
+      
+      mFrame.getContentPane().add(BorderLayout.SOUTH, textPanel);
       mFrame.setVisible(true);
-      mFrame.setSize(500, 200);
+      mFrame.setSize(500, 600);
    }
    
    class MyOpenListener implements ActionListener
@@ -84,14 +97,12 @@ public class MyGuiTest
    {
       public void actionPerformed(ActionEvent event)
       {
-         String html = "";
-         html += "<!DOCTYPE html>\n<html>\n  <head>\n    <title>Enter Title Here</title>\n";
-         html += "  </head>\n  <body>\n  </body>\n</html>";
-         String blankHTML = html;
+         String blankHTML = generateBlankHTML();
          try
          {
             BufferedWriter fout = new BufferedWriter(new FileWriter(file));
-            fout.write("<!DOCTYPE html>\n<html>\n  <head>\n    <title>Enter Title Here</title>\n  </head>\n  <body>\n  </body>\n</html>");
+            fout.write(blankHTML);
+            fout.close();
          }
          catch (Exception e)
          {
@@ -103,8 +114,8 @@ public class MyGuiTest
    public String generateBlankHTML()
    {
       String html = "";
-      html += "<!DOCTYPE html>\n<html>\n  <head>\n    <title>Enter Title Here</title>\n";
-      html += "  </head>\n  <body>\n  </body>\n</html>";
+      html += "<!DOCTYPE html>\n";
+      html += htmlEdit.getText();
       return html;
    }
 }
